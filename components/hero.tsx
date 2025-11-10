@@ -1,25 +1,23 @@
 'use client';
 import Link from 'next/link';
 import { Button } from './ui/button';
-import { GridScan } from './ui/react-bits/GridScan/GridScan';
 
 export function Hero() {
   return (
-    <div className="relative w-full h-[screen] bg-[#090909] text-white">
-      <GridScan
-        className="absolute inset-0 z-0"
-        sensitivity={0.55}
-        lineThickness={1}
-        linesColor="#464646"
-        gridScale={0.08}
-        scanColor="#8e4dc2"
-        scanOpacity={0.4}
-        enablePost
-        bloomIntensity={0.6}
-        chromaticAberration={0.002}
-        noiseIntensity={0.01}
-      />
-      <div className="absolute inset-0 grid place-items-center">
+    <div className="relative w-full h-screen bg-[#090909] text-white">
+      <picture className="h-screen">
+        <source
+          srcSet="https://static.crunchyroll.com/cr-acquisition/assets/img/start/hero/us-global/background-tablet.webp 1x, https://static.crunchyroll.com/cr-acquisition/assets/img/start/hero/us-global/background-tablet@2x.webp 2x, https://static.crunchyroll.com/cr-acquisition/assets/img/start/hero/us-global/background-tablet@3x.webp 3x"
+          type="image/webp"
+        ></source>
+        <img
+          src="https://static.crunchyroll.com/cr-acquisition/assets/img/start/hero/us-global/background-tablet.webp 1x, https://static.crunchyroll.com/cr-acquisition/assets/img/start/hero/us-global/background-tablet@2x.webp 2x, https://static.crunchyroll.com/cr-acquisition/assets/img/start/hero/us-global/background-tablet@3x.webp 3x"
+          alt="hero"
+          loading="lazy"
+          className="object-cover h-full"
+        />
+      </picture>
+      <div className="absolute inset-0 z-10 grid place-items-center">
         <div className="text-center max-w-xl p-7 flex flex-col gap-10">
           <h3 className="font-extrabold text-4xl">
             Nonton anime favoritmu kapan saja, di mana saja
@@ -35,6 +33,7 @@ export function Hero() {
           </Link>
         </div>
       </div>
+      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/20 z-0"></div>
     </div>
   );
 }
