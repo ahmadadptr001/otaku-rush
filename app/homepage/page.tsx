@@ -4,6 +4,7 @@ import React from 'react';
 import { getAllAnime, AnimeField, getAnimeLatest } from '@/service/anime';
 import Movie from '@/components/movie-icon';
 import { Play, Star } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function Beranda() {
   const [featuredAnime, setFeaturedAnime] = React.useState<AnimeField[]>([]);
@@ -14,6 +15,8 @@ export default function Beranda() {
   const [errorLatest, setErrorLatest] = React.useState<string | null>(null);
   const [page, setPage] = React.useState<number>(1);
   const [hasMore, setHasMore] = React.useState<boolean>(true);
+
+  const router = useRouter();
 
   // featured
   React.useEffect(() => {
@@ -249,6 +252,11 @@ export default function Beranda() {
               key={a.id ?? `${a.title}-${idx}`}
               className="min-w-[220px] w-[220px] snap-start rounded-lg border bg-zinc-900/40 overflow-hidden shadow hover:scale-105 transition-transform"
               role="listitem"
+              onClick={() =>
+                router.push(
+                  `/homepage/detail/${encodeURIComponent(a?.title ?? '')}?src=${encodeURIComponent(a?.detailLink ?? '')}`
+                )
+              }
             >
               <div className="h-40 bg-gray-800">
                 <img
@@ -261,9 +269,11 @@ export default function Beranda() {
               <div className="p-3">
                 <h4 className="font-medium text-sm line-clamp-1">{a.title}</h4>
                 <div className="mt-3 flex flex-col gap-1 justify-between">
-                  <span className="text-xs text-cyan-500 lowercase">{a?.status ?? '—'}</span>
+                  <span className="text-xs text-cyan-500 lowercase">
+                    {a?.status ?? '—'}
+                  </span>
                   <span className="flex items-center gap-2 text-[.55rem] text-gray-300">
-                    <Star className='fill-yellow-500 stroke-yellow-500 size-3'/>
+                    <Star className="fill-yellow-500 stroke-yellow-500 size-3" />
                     {a?.rating ?? '—'}
                   </span>
                 </div>
