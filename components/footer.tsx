@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="relative w-full flex border-t items-center justify-center  mx-auto text-center text-xs gap-8 py-16">
       <div className="absolute inset-0 z-20 grid place-items-center">
         <p>
-          build by team{' '}
+          build by {' '}
           <a
             href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
             target="_blank"
@@ -15,6 +15,7 @@ export default function Footer() {
               RUSH
             </span>
           </a>
+          {' '}team
         </p>
       </div>
       <picture className="absolute inset-0 h-32 -z-2 bg-gradient-to-r from-black via-gray-950 to-transparent">
