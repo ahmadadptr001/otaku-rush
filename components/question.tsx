@@ -13,7 +13,7 @@ export default function Question() {
           kami untuk mempelajari lebih lanjut.
         </p>
       </div>
-      <p className="mt-10 text-center container mx-auto text-sm">
+      <p className="mt-10 text-center container mx-auto text-sm text-gray-400">
         *Ketersediaan perangkat dan konten berbeda-beda tergantung negara atau
         wilayah.
       </p>
