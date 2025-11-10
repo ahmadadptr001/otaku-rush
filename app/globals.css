@@ -68,11 +68,59 @@
   }
 }
 
-.scrollbar-hide {
+/* Scrollbar modern / minimalis */
+.scrollbar-modern {
+  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: thin;    /* Firefox */
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.scrollbar-modern::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.scrollbar-modern::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-modern::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 120ms ease;
+}
+.scrollbar-modern:hover::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.16);
+}
+
+/* Hide scrollbar (if needed on very small screens) */
+.scrollbar-hidden {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-.scrollbar-hide::-webkit-scrollbar {
+.scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }
+
+/* Pagination small button styles */
+.pagi-btn {
+  @apply px-3 py-1 rounded-md text-sm bg-white/5 hover:bg-white/10 transition;
+}
+.pagi-btn--active {
+  @apply bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow;
+}
+.pagi-btn--disabled {
+  @apply opacity-40 cursor-not-allowed;
+}
+
+/* Utility: visually hidden but accessible */
+.sr-only {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  border: 0; padding: 0; margin: -1px;
+}
+
 

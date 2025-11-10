@@ -71,6 +71,18 @@ export default function Beranda() {
   };
 
   // page window: tampilkan tombol halaman sekitar current (±2)
+  const listRef = React.useRef<HTMLDivElement | null>(null);
+
+  // fetch featured & latest sama seperti sebelumnya (tidak diulang di sini)
+
+  // scroll to start when page changes
+  React.useEffect(() => {
+    if (!listRef.current) return;
+    // scroll ke kiri paling pertama item pada page change
+    listRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+  }, [page]);
+
+  // page window helper (sama)
   const pageWindow = () => {
     const windowSize = 5;
     const half = Math.floor(windowSize / 2);
@@ -114,29 +126,61 @@ export default function Beranda() {
         </div>
       </div>
 
-      {/* latest anime - HORIZONTAL */}
-      <div className="container mx-auto p-4 py-16">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-5">
-            <div className="w-2 h-7 bg-gradient-to-tr from-cyan-500 to-purple-600 border" />
-            <p className="text-2xl font-bold">Latest Anime</p>
+      <div className="flex items-center flex-col md:flex-row justify-between12">
+        {/* latest anime */}
+        <div className="container mx-auto p-4 pt-16 md:py-16">
+          {/* header tetap di atas */}
+          <div className="mb-4">
+            <div className="flex items-center gap-5">
+              <div className="w-2 h-7 bg-gradient-to-tr from-cyan-500 to-purple-600 border" />
+              <p className="text-2xl font-bold">Latest Anime</p>
+            </div>
           </div>
 
-          {/* improved pagination UI */}
-          <div className="flex items-center gap-3">
+          {/* desktop arrows */}
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 hidden md:flex gap-2">
             <button
-              onClick={goPrev}
-              disabled={page === 1 || loadingLatest}
-              className="px-3 py-1 rounded-md bg-white/5 text-sm border border-white/10 hover:bg-white/10 disabled:opacity-40"
+              onClick={() => {
+                if (!listRef.current) return;
+                listRef.current.scrollBy({ left: -240, behavior: 'smooth' });
+              }}
+              className="p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/60"
+              aria-label="Scroll left"
             >
-              Prev
+              ‹
             </button>
+            <button
+              onClick={() => {
+                if (!listRef.current) return;
+                listRef.current.scrollBy({ left: 240, behavior: 'smooth' });
+              }}
+              className="p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/60"
+              aria-label="Scroll right"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+        {/* pagination: MOBILE -> tampil di bawah, center; DESKTOP -> tetap di samping header */}
+        <div className="mb-10 md:mb-0">
+          <div className="flex flex-col md:flex-row items-center gap-3">
+            {/* row tombol Prev / Page buttons / Next */}
+            <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-2">
+              <button
+                onClick={goPrev}
+                disabled={page === 1 || loadingLatest}
+                aria-disabled={page === 1}
+                className={`px-3 py-1 rounded-md text-sm bg-white/5 hover:bg-white/10 transition disabled:opacity-40`}
+              >
+                Prev
+              </button>
 
-            <div className="hidden sm:flex items-center gap-1">
+              {/* tampil semua tombol pageWindow pada semua ukuran */}
               {pageWindow().map((p) => (
                 <button
                   key={p}
                   onClick={() => setPage(p)}
+                  aria-current={p === page ? 'page' : undefined}
                   className={`px-3 py-1 rounded-md text-sm ${
                     p === page
                       ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow'
@@ -146,33 +190,41 @@ export default function Beranda() {
                   {p}
                 </button>
               ))}
+
+              <button
+                onClick={goNext}
+                disabled={loadingLatest || !hasMore}
+                aria-disabled={loadingLatest || !hasMore}
+                className={`px-3 py-1 rounded-md text-sm bg-white/5 hover:bg-white/10 transition disabled:opacity-40`}
+              >
+                Next
+              </button>
             </div>
 
-            <button
-              onClick={goNext}
-              disabled={loadingLatest || !hasMore}
-              className="px-3 py-1 rounded-md bg-white/5 text-sm border border-white/10 hover:bg-white/10 disabled:opacity-40"
-            >
-              Next
-            </button>
-
-            <div className="flex items-center gap-2 ml-3">
+            {/* jump input kecil di bawah (mobile & desktop) */}
+            <div className="mt-2 md:m-0 flex items-center gap-2">
               <input
                 type="number"
                 min={1}
                 placeholder="Page"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter')
-                    jumpTo((e.target as HTMLInputElement).value);
+                  if (e.key === 'Enter') {
+                    const v = (e.target as HTMLInputElement).value;
+                    const n = Math.floor(Number(v));
+                    if (!Number.isNaN(n) && n >= 1) setPage(n);
+                  }
                 }}
-                className="w-20 px-2 py-1 border rounded bg-transparent text-sm"
+                className="w-20 px-2 py-1 border rounded bg-transparent text-sm text-center"
               />
               <button
                 onClick={() => {
                   const el = document.querySelector<HTMLInputElement>(
                     'input[placeholder="Page"]'
                   );
-                  if (el) jumpTo(el.value);
+                  if (el) {
+                    const n = Math.floor(Number(el.value));
+                    if (!Number.isNaN(n) && n >= 1) setPage(n);
+                  }
                 }}
                 className="px-3 py-1 rounded-md bg-cyan-600 text-white text-sm"
               >
@@ -181,81 +233,45 @@ export default function Beranda() {
             </div>
           </div>
         </div>
-
-        {loadingLatest && <p className="text-center">Memuat latest...</p>}
-        {errorLatest && (
-          <p className="text-red-500 text-center">{errorLatest}</p>
-        )}
-
-        {/* horizontal list */}
-        <div className="relative">
-          <div
-            className="flex gap-4 overflow-x-auto snap-x snap-mandatory py-2 px-1 scrollbar-hide"
-            style={{ scrollPadding: '1rem' }}
-          >
-            {latestAnime.map((a) => (
-              <article
-                key={a.id ?? `${a.title}-${Math.random()}`}
-                className="min-w-[220px] w-[220px] snap-start rounded-lg border bg-zinc-900/40 overflow-hidden shadow hover:scale-105 transition-transform"
-              >
-                <div className="h-40 bg-gray-800">
-                  <img
-                    src={a.imageUrl}
-                    alt={a.title}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="p-3">
-                  <h4 className="font-medium text-sm line-clamp-1">
-                    {a.title}
-                  </h4>
-                  <div className="mt-3 flex flex-col gap-1">
-                    <span className="text-xs  lowercase text-cyan-600">
-                      {a?.status ?? '-'}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <Star className='size-3 stroke-yellow-500 fill-yellow-500'/>
-                      <span className="text-[.55rem] text-gray-300">
-                        {a?.rating ?? '-'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {/* optional arrows to scroll container (desktop) */}
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 hidden md:flex gap-2">
-            <button
-              onClick={() => {
-                const c = document.querySelector(
-                  '.scrollbar-hide'
-                ) as HTMLElement | null;
-                if (c) c.scrollBy({ left: -240, behavior: 'smooth' });
-              }}
-              className="p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/60"
-            >
-              ‹
-            </button>
-            <button
-              onClick={() => {
-                const c = document.querySelector(
-                  '.scrollbar-hide'
-                ) as HTMLElement | null;
-                if (c) c.scrollBy({ left: 240, behavior: 'smooth' });
-              }}
-              className="p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/60"
-            >
-              ›
-            </button>
-          </div>
-        </div>
       </div>
 
-      {/* tail spacing */}
-      <div className="h-24" />
+      {/* horizontal list */}
+      <div className="relative mb-16">
+        <div
+          ref={listRef}
+          className="flex gap-4 overflow-x-auto snap-x snap-mandatory py-2 px-1 scrollbar-modern"
+          style={{ scrollPadding: '1rem' }}
+          role="list"
+          aria-label="Latest anime list"
+        >
+          {latestAnime.map((a, idx) => (
+            <article
+              key={a.id ?? `${a.title}-${idx}`}
+              className="min-w-[220px] w-[220px] snap-start rounded-lg border bg-zinc-900/40 overflow-hidden shadow hover:scale-105 transition-transform"
+              role="listitem"
+            >
+              <div className="h-40 bg-gray-800">
+                <img
+                  src={a.imageUrl}
+                  alt={a.title}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <div className="p-3">
+                <h4 className="font-medium text-sm line-clamp-1">{a.title}</h4>
+                <div className="mt-3 flex flex-col gap-1 justify-between">
+                  <span className="text-xs text-cyan-500 lowercase">{a?.status ?? '—'}</span>
+                  <span className="flex items-center gap-2 text-[.55rem] text-gray-300">
+                    <Star className='fill-yellow-500 stroke-yellow-500 size-3'/>
+                    {a?.rating ?? '—'}
+                  </span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
     </main>
   );
 }
