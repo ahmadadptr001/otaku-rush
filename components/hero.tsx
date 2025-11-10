@@ -1,18 +1,11 @@
 'use client';
 import Link from 'next/link';
-import { NextLogo } from './next-logo';
-import { SupabaseLogo } from './supabase-logo';
 import { Button } from './ui/button';
 import { GridScan } from './ui/react-bits/GridScan/GridScan';
-import { Tv2 } from 'lucide-react';
-import { useEffect } from 'react';
-import { useTheme } from 'next-themes';
 
 export function Hero() {
-  const { theme, setTheme } = useTheme();
-
   return (
-    <div className="relative w-full h-[700px] bg-[#090909] text-white">
+    <div className="relative w-full h-[screen] bg-[#090909] text-white">
       <GridScan
         className="absolute inset-0 z-0"
         sensitivity={0.55}
