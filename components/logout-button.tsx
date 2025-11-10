@@ -13,5 +13,5 @@ export function LogoutButton() {
     router.push("/auth/login");
   };
 
-  return <Button onClick={logout}>Logout</Button>;
+  return <Button onClick={logout} className="text-xs px-3 bg-red-800 hover:bg-red-900 text-white h-8">Keluar</Button>;
 }
