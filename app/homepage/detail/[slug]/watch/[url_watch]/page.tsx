@@ -120,7 +120,7 @@ export default function PageWatch() {
   }
 
   return (
-    <main className="h-screen grid grid-rows-[auto_1fr] bg-gradient-to-br from-slate-900 via-black to-gray-900 text-white">
+    <main className="min-h-screen grid grid-rows-[auto_1fr] bg-gradient-to-br from-slate-900 via-black to-gray-900 text-white">
       {/* Top bar */}
       <header className="px-6 py-3 flex items-center justify-between border-b border-white/5">
         <div className="flex items-center gap-3">
@@ -134,7 +134,7 @@ export default function PageWatch() {
       </header>
 
       {/* Content */}
-      <div className="h-full grid lg:grid-cols-[1fr_420px] gap-6 px-6 py-6">
+      <div className="h-full grid lg:grid-cols-[1fr_500px] gap-6 px-6 py-6">
         {/* Left: video area */}
         <section className="relative rounded-xl overflow-hidden bg-black shadow-xl flex items-center justify-center">
           {/* Poster / overlay */}
