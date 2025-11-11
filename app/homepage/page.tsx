@@ -227,7 +227,7 @@ export default function Beranda() {
       {/* Collections header + controls (Latest controls reused) */}
       <div className="container mx-auto p-4 pt-8 md:py-12 flex flex-col gap-6">
         {/* Latest Header + Pagination */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-3 md:items-center justify-between">
           <div>
             <div className="flex items-center gap-5">
               <div className="w-2 h-7 bg-gradient-to-tr from-cyan-500 to-purple-600 border" />
@@ -235,7 +235,7 @@ export default function Beranda() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex px-3 items-center gap-3">
             <div className="hidden md:flex gap-2">
               <button
                 onClick={() =>
@@ -260,7 +260,7 @@ export default function Beranda() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap md:flex-nowrap items-center gap-2">
               <button
                 onClick={goPrev}
                 disabled={page === 1 || loadingLatest}
