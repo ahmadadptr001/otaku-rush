@@ -26,7 +26,7 @@ export function Hero() {
             Streaming ribuan episode dan film anime berkualitas HD — dari klasik
             hingga rilisan terbaru
           </p>
-          <Link href={`/beranda`}>
+          <Link href={`/homepage`}>
             <Button className="bg-white hover:bg-gray-200 text-black rounded-full mt-5 w-fit mx-auto text-lg p-8 font-bold animate-bounce">
               Nonton Gratis
             </Button>
