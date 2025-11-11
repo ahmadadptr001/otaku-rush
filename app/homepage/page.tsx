@@ -3,7 +3,7 @@
 import React from 'react';
 import { getAllAnime, getAnimeLatest, AnimeField } from '@/service/anime';
 import Movie from '@/components/movie-icon';
-import { Play, Star } from 'lucide-react';
+import { MonitorUp, Play, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 
@@ -386,8 +386,8 @@ export default function Beranda() {
                           {a.type ?? '—'}
                         </span>
                         <div className="text-xs text-yellow-400 flex items-center gap-1">
-                          <Star className="w-3 h-3" />
-                          {a.score ?? '-'}
+                          <MonitorUp className="w-3 h-3" />
+                          <span className='text-[.5rem]'>{a.quality ?? '-'}</span>
                         </div>
                       </div>
                     </div>
