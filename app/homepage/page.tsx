@@ -6,6 +6,7 @@ import Movie from '@/components/movie-icon';
 import { MonitorUp, Play, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
+import { filterAnimeLink } from '@/lib/link';
 
 /* Small reusable skeleton */
 function CardSkeleton({ className = '' }: { className?: string }) {
@@ -117,8 +118,9 @@ export default function Beranda() {
   /* Navigation helpers */
   const openDetail = (item: AnimeField) => {
     const title = encodeURIComponent(item.title ?? 'unknown');
-    const src = encodeURIComponent(item.detailLink ?? '');
-    router.push(`/homepage/detail/${title}?src=${src}`);
+    const src_filter = filterAnimeLink(item.detailLink ?? '');
+    const src = encodeURIComponent(src_filter);
+    router.replace(`/homepage/detail/${title}?src=${src}`);
   };
 
   const openWatch = (
@@ -387,7 +389,9 @@ export default function Beranda() {
                         </span>
                         <div className="text-xs text-yellow-400 flex items-center gap-1">
                           <MonitorUp className="w-3 h-3" />
-                          <span className='text-[.5rem]'>{a.quality ?? '-'}</span>
+                          <span className="text-[.5rem]">
+                            {a.quality ?? '-'}
+                          </span>
                         </div>
                       </div>
                     </div>
