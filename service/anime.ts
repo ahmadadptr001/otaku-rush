@@ -23,12 +23,12 @@ export type AnimeField = {
   availableQualities: [string];
   sources: [
     {
-      id: string,
-      size: string,
-      src: string,
-      type: string
+      id: string;
+      size: string;
+      src: string;
+      type: string;
     }
-  ]
+  ];
 };
 
 export type GetAllAnimeResponse = {
@@ -123,3 +123,27 @@ export const getAnimeWatch = async (
   return null;
 };
 
+export const searchAnime = async (query: string): Promise<AnimeField[]> => {
+  const base = process.env.NEXT_PUBLIC_ANIME_SEARCH_URL;
+  if (!base) throw new Error('NEXT_PUBLIC_ANIME_SEARCH_URL belum diset');
+
+  const url = base + encodeURIComponent(query.trim());
+  const res = await axios.get<unknown>(url, { timeout: 10_000 });
+
+  // Jika respons langsung berupa array
+  if (Array.isArray(res.data)) {
+    return res.data as AnimeField[];
+  }
+
+  // Jika respons dibungkus dalam properti (mis. { data: [...] })
+  if (
+    res.data &&
+    typeof res.data === 'object' &&
+    Array.isArray((res.data as any).data)
+  ) {
+    return (res.data as any).data as AnimeField[];
+  }
+
+  // fallback aman
+  return [];
+};
