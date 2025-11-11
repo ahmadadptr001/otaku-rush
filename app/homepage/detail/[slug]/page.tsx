@@ -5,7 +5,14 @@ import { asString } from '@/lib/params';
 import { getAnimeDetail } from '@/service/anime';
 import { ChevronRight, Star } from 'lucide-react';
 import { useParams, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React from 'react';
+
+export interface Episode {
+  title?: string;
+  url?: string;
+  [k: string]: any;
+}
 
 export default function PageDetailSlug() {
   const param = useParams();
@@ -16,6 +23,7 @@ export default function PageDetailSlug() {
   const title_anime = decodeURIComponent(raw_title_anime) ?? '';
   const src = raw_src ? decodeURIComponent(raw_src) : null;
 
+  const router = useRouter();
   const [anime, setAnime] = React.useState<object | any>(null);
 
   React.useEffect(() => {
@@ -26,9 +34,7 @@ export default function PageDetailSlug() {
     })();
   }, []);
 
-  const handleWatch =() => {
-
-  }
+  const handleWatch = () => {};
 
   return (
     <main className="container p-4 mx-auto mt-6">
@@ -91,11 +97,17 @@ export default function PageDetailSlug() {
 
           {/* daftar episode */}
           <div className="grid grid-cols-2 lg:grid-cols-3 mt-2 gap-2">
-            {anime?.episodesList.map((episode: object, i: number) => (
+            {anime?.episodesList.map((episode: Episode, i: number) => (
               <div
                 key={i}
                 className="flex items-center gap-2 bg-gray-500/20 p-3 rounded-md cursor-pointer"
-                onClick={handleWatch}
+                onClick={() =>
+                  router.push(
+                    `/homepage/detail/${encodeURIComponent(
+                      anime?.title ?? ''
+                    )}/watch/${episode?.title ?? ''}?src=${encodeURIComponent(episode?.url ?? '')}`
+                  )
+                }
               >
                 <Play className="stroke-0" /> <span>Episode {i + 1}</span>
                 <ChevronRight className="ms-auto" />

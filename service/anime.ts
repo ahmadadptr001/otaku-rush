@@ -20,6 +20,15 @@ export type AnimeField = {
   studio?: string;
   episodesList?: [title?: string, url?: string];
   genres: [string];
+  availableQualities: [string];
+  sources: [
+    {
+      id: string,
+      size: string,
+      src: string,
+      type: string
+    }
+  ]
 };
 
 export type GetAllAnimeResponse = {
@@ -27,6 +36,7 @@ export type GetAllAnimeResponse = {
   ongoingAnime?: AnimeField[];
   finishedAnime?: AnimeField[];
   movieAnime?: AnimeField[];
+  videoElement?: AnimeField[];
 };
 
 export const getAllAnime = async (): Promise<GetAllAnimeResponse> => {
@@ -91,3 +101,25 @@ export const getAnimeDetail = async (
   // fallback aman
   return null;
 };
+
+export const getAnimeWatch = async (
+  link: string
+): Promise<AnimeField | null> => {
+  const url = process.env.NEXT_PUBLIC_ANIME_WATCH_URL + link;
+  if (!url) throw new Error('NEXT_PUBLIC_ANIME_WATCH_URL belum diset');
+
+  const res = await axios.get<unknown>(url);
+  // jika API mengembalikan object WATCH
+  if (res.data && typeof res.data === 'object' && !Array.isArray(res.data)) {
+    return res.data as AnimeField;
+  }
+
+  // jika API mengembalikan array dan Anda ingin item pertama
+  if (Array.isArray(res.data) && res.data.length > 0) {
+    return res.data[0] as AnimeField;
+  }
+
+  // fallback aman
+  return null;
+};
+
