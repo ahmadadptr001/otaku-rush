@@ -1,5 +1,5 @@
 // src/service/anime.ts
-import axios from "axios";
+import axios from 'axios';
 
 export type AnimeField = {
   id?: string;
@@ -12,6 +12,14 @@ export type AnimeField = {
   detailLink?: string;
   episodeInfo?: string;
   description?: string;
+  synopsis?: string;
+  score?: string;
+  member?: string;
+  ratingInfo?: string;
+  releaseDate?: string;
+  studio?: string;
+  episodesList?: [title?: string, url?: string];
+  genres: [string];
 };
 
 export type GetAllAnimeResponse = {
@@ -23,7 +31,7 @@ export type GetAllAnimeResponse = {
 
 export const getAllAnime = async (): Promise<GetAllAnimeResponse> => {
   const url = process.env.NEXT_PUBLIC_ANIME_URL;
-  if (!url) throw new Error("NEXT_PUBLIC_ANIME_URL belum diset");
+  if (!url) throw new Error('NEXT_PUBLIC_ANIME_URL belum diset');
 
   const res = await axios.get<GetAllAnimeResponse>(url, { timeout: 10_000 });
   return res.data ?? {};
@@ -36,9 +44,13 @@ export const getAllAnime = async (): Promise<GetAllAnimeResponse> => {
  */
 export const getAnimeLatest = async (page: number): Promise<AnimeField[]> => {
   const base = process.env.NEXT_PUBLIC_ANIME_LATEST_URL;
-  if (!base) throw new Error("NEXT_PUBLIC_ANIME_LATEST_URL belum diset");
+  if (!base) throw new Error('NEXT_PUBLIC_ANIME_LATEST_URL belum diset');
 
-  const url = base + (base.includes("?") ? "&" : "?") + "page=" + encodeURIComponent(String(page));
+  const url =
+    base +
+    (base.includes('?') ? '&' : '?') +
+    'page=' +
+    encodeURIComponent(String(page));
   const res = await axios.get<unknown>(url, { timeout: 10_000 });
 
   // Pastikan safety: jika respons adalah array, kembalikan; jika bukan, fallback ke [].
@@ -47,10 +59,35 @@ export const getAnimeLatest = async (page: number): Promise<AnimeField[]> => {
   }
 
   // Jika API membungkus array di properti (mis. { data: [...] }), periksa itu juga
-  if (res.data && typeof res.data === "object" && Array.isArray((res.data as any).data)) {
+  if (
+    res.data &&
+    typeof res.data === 'object' &&
+    Array.isArray((res.data as any).data)
+  ) {
     return (res.data as any).data as AnimeField[];
   }
 
   // fallback aman
   return [];
+};
+
+export const getAnimeDetail = async (
+  link: string
+): Promise<AnimeField | null> => {
+  const url = process.env.NEXT_PUBLIC_ANIME_DETAIL_URL + link;
+  if (!url) throw new Error('NEXT_PUBLIC_ANIME_DETAIL_URL belum diset');
+
+  const res = await axios.get<unknown>(url, { timeout: 10_000 });
+  // jika API mengembalikan object detail
+  if (res.data && typeof res.data === 'object' && !Array.isArray(res.data)) {
+    return res.data as AnimeField;
+  }
+
+  // jika API mengembalikan array dan Anda ingin item pertama
+  if (Array.isArray(res.data) && res.data.length > 0) {
+    return res.data[0] as AnimeField;
+  }
+
+  // fallback aman
+  return null;
 };
