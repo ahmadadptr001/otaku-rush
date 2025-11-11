@@ -1,6 +1,7 @@
-export default function Play() {
+export default function Play(props: any) {
   return (
     <svg
+      {...props}
       width="40"
       height="40"
       viewBox="0 0 40 40"
